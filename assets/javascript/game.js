@@ -16,6 +16,13 @@ $( document ).ready(function() {
 	var myWord = pickWord();
 	displayWord(myWord);
 
+	//Listen for click
+	$(".selectedLetter").on("click", function(){
+		//Letter of selected card
+		var selectedLetter = $(this).text();
+		checkLetter(selectedLetter);
+	})
+
 
 	function pickWord(){
 		var currentWord = "hello world";
@@ -25,15 +32,26 @@ $( document ).ready(function() {
 	function displayWord(selectedWord){
 		for(var i = 0; i < selectedWord.length; i++){
 			this.letter = selectedWord.charAt(i);
-			console.log(this.letter);
+//			console.log(this.letter);
 			if (this.letter != ' ') {
-				$("#hiddenWord").append(" _ ");
+				$("#hiddenWord").append("<span id='pos_"+ i +"'> _ </span>");
 			}
 			else {
-				$("#hiddenWord").append(" - ");
+				$("#hiddenWord").append("-");
 			}
 
 		}
 	}
 
+	function checkLetter(letterToCheck){
+		for(var i = 0; i < myWord.length; i++) {
+			if(letterToCheck.toUpperCase() == myWord.charAt(i).toUpperCase()) {
+				//Show in Page
+				$("#pos_" + i).text(letterToCheck.toUpperCase());
+			}
+			else {
+				console.log("I'm NOT here")
+			}
+		}
+	}
 });
