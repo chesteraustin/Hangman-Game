@@ -23,22 +23,25 @@ $( document ).ready(function() {
 	$(".selectedLetter").on("click", function(){
 		//Letter of selected card
 		var selectedLetter = $(this).text();
-		checkLetter(selectedLetter);
+		correctLetter = checkLetter(selectedLetter);
+
+		if (correctLetter == false) {
+			showPart();
+		}
 
 		//check for win
+		checkWin(correctLetter);
 	})
 
 	//Listen for Keyup
 	document.onkeyup = function(event){
 		var selectedLetter = event.key;
 		correctLetter = checkLetter(selectedLetter);
-		console.log("correctLetter : " + correctLetter);
 
 		if (correctLetter == false) {
 			showPart();
 		}
 
-//		console.log(correctLetter);
 		//check for win
 		checkWin(correctLetter);
 	}
