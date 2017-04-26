@@ -82,9 +82,10 @@ $( document ).ready(function() {
 	}
 
 	function showPart(goodTurn){
+		$($("#hangmanBody .bodyPart")[errorCounter]).show();
 		errorCounter++;
-		console.log(errorCounter)
 		if (errorCounter == 6) {
+			alert("Game Over. You Lost.")
 			console.log("i lost")
 		}
 	}
