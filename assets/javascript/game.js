@@ -84,7 +84,7 @@ $( document ).ready(function() {
 	function showPart(goodTurn){
 		errorCounter++;
 		console.log(errorCounter)
-		if (errorCounter == 5) {
+		if (errorCounter == 6) {
 			console.log("i lost")
 		}
 	}
