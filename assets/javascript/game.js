@@ -1,4 +1,7 @@
 $( document ).ready(function() {
+	var errorCounter = 0;
+	var goodTurn = false;
+
 	//Put letters into cards
 	for(var i = 65; i < 91; i++){
 		var myLetter = String.fromCharCode(i)
@@ -13,7 +16,7 @@ $( document ).ready(function() {
 			)
 	}
 
-	var myWord = pickWord();
+	var myWord = pickWord().toUpperCase();
 	displayWord(myWord);
 
 	//Listen for click
@@ -21,8 +24,24 @@ $( document ).ready(function() {
 		//Letter of selected card
 		var selectedLetter = $(this).text();
 		checkLetter(selectedLetter);
+
+		//check for win
 	})
 
+	//Listen for Keyup
+	document.onkeyup = function(event){
+		var selectedLetter = event.key;
+		correctLetter = checkLetter(selectedLetter);
+		console.log("correctLetter : " + correctLetter);
+
+		if (correctLetter == false) {
+			showPart();
+		}
+
+//		console.log(correctLetter);
+		//check for win
+		checkWin(correctLetter);
+	}
 
 	function pickWord(){
 		var currentWord = "hello world";
@@ -32,26 +51,42 @@ $( document ).ready(function() {
 	function displayWord(selectedWord){
 		for(var i = 0; i < selectedWord.length; i++){
 			this.letter = selectedWord.charAt(i);
-//			console.log(this.letter);
 			if (this.letter != ' ') {
 				$("#hiddenWord").append("<span id='pos_"+ i +"'> _ </span>");
 			}
 			else {
-				$("#hiddenWord").append("-");
+				$("#hiddenWord").append(" ");
 			}
-
 		}
 	}
 
 	function checkLetter(letterToCheck){
+		goodTurn = false;
 		for(var i = 0; i < myWord.length; i++) {
-			if(letterToCheck.toUpperCase() == myWord.charAt(i).toUpperCase()) {
+			if(letterToCheck.toUpperCase() == myWord.charAt(i)) {
 				//Show in Page
 				$("#pos_" + i).text(letterToCheck.toUpperCase());
+				goodTurn = true;
 			}
 			else {
-				console.log("I'm NOT here")
-			}
+			} 
+		}
+		return goodTurn
+	}
+
+	function checkWin(){
+		var currentLetters = $("#hiddenWord").text();
+		if (currentLetters == myWord) {
+		console.log("i win")
 		}
 	}
+
+	function showPart(goodTurn){
+		errorCounter++;
+		console.log(errorCounter)
+		if (errorCounter == 5) {
+			console.log("i lost")
+		}
+	}
+
 });
