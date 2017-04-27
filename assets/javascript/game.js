@@ -1,7 +1,63 @@
 $( document ).ready(function() {
+	var myWord = "";
 	var errorCounter = 0;
-	var goodTurn = false;
+	var newErrorCount;
+	pickWordAJAX();
 
+	//Listen for click
+	$(".selectedLetter").on("click", function(){
+		//Letter of selected card
+		var selectedLetter = $(this).text();
+		correctLetter = checkLetter(selectedLetter);
+
+		if (correctLetter == false) {
+			showPart(errorCounter);
+			errorCounter++;
+		}
+
+		//check for win
+		checkWin(correctLetter);
+	})
+
+	//Listen for Keyup
+	document.onkeyup = function(event){
+		var correctLetter;
+		var selectedLetter = event.key;
+
+		//only letters are valid choices, anything else won't count
+		if (event.which <= 90 && event.which >= 65) {
+			correctLetter = checkLetter(selectedLetter);
+
+			if (correctLetter == false) {
+				showPart(errorCounter);
+				errorCounter++;
+			}
+			//check for win
+			checkWin(correctLetter);
+		}
+	}
+
+	function pickWordAJAX(){
+		var requestStr = "http://randomword.setgetgo.com/get.php";
+
+		myWordAJAX = $.ajax({
+			type: "GET",
+			url: requestStr,
+			dataType: "jsonp",
+			jsonpCallback: 'RandomWordComplete'
+		});
+	}
+
+	function showPart(errorCounter){
+		$($("#hangmanBody .bodyPart")[errorCounter]).show();
+		console.log(errorCounter)
+		if (errorCounter == 5) {
+			console.log("i lost")
+		}
+	}
+});
+
+function RandomWordComplete(data) {
 	//Put letters into cards
 	for(var i = 65; i < 91; i++){
 		var myLetter = String.fromCharCode(i)
@@ -16,81 +72,45 @@ $( document ).ready(function() {
 			)
 	}
 
-	var myWord = pickWord().toUpperCase();
+	myWord = data.Word.toUpperCase();
+	console.log("randomWordComplete: " + myWord);
 	displayWord(myWord);
+}
 
-	//Listen for click
-	$(".selectedLetter").on("click", function(){
-		//Letter of selected card
-		var selectedLetter = $(this).text();
-		correctLetter = checkLetter(selectedLetter);
+function pickWord(){
+	myWord = "Hello World";
+	return myWord;
+}
 
-		if (correctLetter == false) {
-			showPart();
+function displayWord(selectedWord){
+	for(var i = 0; i < selectedWord.length; i++){
+		this.letter = selectedWord.charAt(i);
+		if (this.letter != ' ') {
+			$("#hiddenWord").append("<span id='pos_"+ i +"'> _ </span>");
 		}
-
-		//check for win
-		checkWin(correctLetter);
-	})
-
-	//Listen for Keyup
-	document.onkeyup = function(event){
-		var selectedLetter = event.key;
-		correctLetter = checkLetter(selectedLetter);
-
-		if (correctLetter == false) {
-			showPart();
-		}
-
-		//check for win
-		checkWin(correctLetter);
-	}
-
-	function pickWord(){
-		var currentWord = "hello world";
-		return currentWord;
-	}
-
-	function displayWord(selectedWord){
-		for(var i = 0; i < selectedWord.length; i++){
-			this.letter = selectedWord.charAt(i);
-			if (this.letter != ' ') {
-				$("#hiddenWord").append("<span id='pos_"+ i +"'> _ </span>");
-			}
-			else {
-				$("#hiddenWord").append(" ");
-			}
+		else {
+			$("#hiddenWord").append(" ");
 		}
 	}
+}
 
-	function checkLetter(letterToCheck){
-		goodTurn = false;
-		for(var i = 0; i < myWord.length; i++) {
-			if(letterToCheck.toUpperCase() == myWord.charAt(i)) {
-				//Show in Page
-				$("#pos_" + i).text(letterToCheck.toUpperCase());
-				goodTurn = true;
-			}
-			else {
-			} 
-		}
-		return goodTurn
+function checkWin(){
+	var currentLetters = $("#hiddenWord").text();
+	if (currentLetters == myWord) {
+	console.log("i win")
 	}
+}
 
-	function checkWin(){
-		var currentLetters = $("#hiddenWord").text();
-		if (currentLetters == myWord) {
-		console.log("i win")
+function checkLetter(letterToCheck){
+	goodTurn = false;
+	for(var i = 0; i < myWord.length; i++) {
+		if(letterToCheck.toUpperCase() == myWord.charAt(i)) {
+			//Show in Page
+			$("#pos_" + i).text(letterToCheck.toUpperCase());
+			goodTurn = true;
 		}
+		else {
+		} 
 	}
-
-	function showPart(goodTurn){
-		$($("#hangmanBody .bodyPart")[errorCounter]).show();
-		errorCounter++;
-		if (errorCounter == 6) {
-			alert("Game Over. You Lost.")
-			console.log("i lost")
-		}
-	}
-
-});
+	return goodTurn
+}
