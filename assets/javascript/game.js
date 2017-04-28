@@ -1,12 +1,45 @@
 $( document ).ready(function() {
 	var myWord = "";
-	var errorCounter = 0;
 	var newErrorCount;
 	pickWordAJAX();
+
+	function pickWordAJAX(){
+		var requestStr = "http://randomword.setgetgo.com/get.php";
+
+		myWordAJAX = $.ajax({
+			type: "GET",
+			url: requestStr,
+			dataType: "jsonp",
+			jsonpCallback: 'RandomWordComplete'
+		});
+	}
+
+});
+
+function RandomWordComplete(data) {
+	var errorCounter = 0;
+
+	//Put letters into cards
+	for(var i = 65; i < 91; i++){
+		var myLetter = String.fromCharCode(i)
+		$("#letterCards").append(''
+			+'<div id="letter_'+ myLetter +'" class="card selectedLetter text-center">'
+			+	'<div class="card-block selectedLetter">'
+			+		'<!--Card content -->'
+			+		'<p class="card-text selectedLetter">' + myLetter + '</p>'
+			+	'</div>'
+			+'</div>'
+			)
+	}
+
+	myWord = data.Word.toUpperCase();
+	console.log("randomWordComplete: " + myWord);
+	displayWord(myWord);
 
 	//Listen for click
 	$(".selectedLetter").on("click", function(){
 		//Letter of selected card
+		console.log($(this));
 		var selectedLetter = $(this).text();
 		correctLetter = checkLetter(selectedLetter);
 
@@ -36,18 +69,7 @@ $( document ).ready(function() {
 			checkWin(correctLetter);
 		}
 	}
-
-	function pickWordAJAX(){
-		var requestStr = "http://randomword.setgetgo.com/get.php";
-
-		myWordAJAX = $.ajax({
-			type: "GET",
-			url: requestStr,
-			dataType: "jsonp",
-			jsonpCallback: 'RandomWordComplete'
-		});
-	}
-
+	
 	function showPart(errorCounter){
 		$($("#hangmanBody .bodyPart")[errorCounter]).show();
 		console.log(errorCounter)
@@ -55,26 +77,7 @@ $( document ).ready(function() {
 			console.log("i lost")
 		}
 	}
-});
 
-function RandomWordComplete(data) {
-	//Put letters into cards
-	for(var i = 65; i < 91; i++){
-		var myLetter = String.fromCharCode(i)
-		$("#letterCards").append(''
-			+'<div id="letter_'+ myLetter +'" class="card card-outline-primary mb-3 text-center">'
-			+	'<div class="card-block selectedLetter">'
-			+		'<blockquote class="card-blockquote">'
-			+			'<h1>'+ myLetter + '</h1>'
-			+		'</blockquote>'
-			+	'</div>'
-			+'</div>'
-			)
-	}
-
-	myWord = data.Word.toUpperCase();
-	console.log("randomWordComplete: " + myWord);
-	displayWord(myWord);
 }
 
 function pickWord(){
