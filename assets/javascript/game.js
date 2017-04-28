@@ -4,13 +4,15 @@ $( document ).ready(function() {
 	pickWordAJAX();
 
 	function pickWordAJAX(){
-		var requestStr = "http://randomword.setgetgo.com/get.php";
+		var requestStr = "assets/javascript/words.json";
 
 		myWordAJAX = $.ajax({
 			type: "GET",
 			url: requestStr,
-			dataType: "jsonp",
-			jsonpCallback: 'RandomWordComplete'
+			success: function(response) {
+//				console.log(response)
+				RandomWordComplete(response);
+			}
 		});
 	}
 
@@ -31,9 +33,8 @@ function RandomWordComplete(data) {
 			+'</div>'
 			)
 	}
-
-	myWord = data.Word.toUpperCase();
-	console.log("randomWordComplete: " + myWord);
+	wordPosition = Math.floor(Math.random()*data.Words.length);
+	myWord = data.Words[wordPosition].toUpperCase();
 	displayWord(myWord);
 
 	//Listen for click
