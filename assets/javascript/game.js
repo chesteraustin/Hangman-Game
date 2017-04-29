@@ -28,6 +28,9 @@ $( document ).ready(function() {
 		});
 	}
 
+	$('#lostMessage').on('hidden.bs.modal', function () {
+		location.reload();
+	});
 });
 
 function RandomWordComplete(data) {
@@ -37,7 +40,7 @@ function RandomWordComplete(data) {
 	for(var i = 65; i < 91; i++){
 		var myLetter = String.fromCharCode(i)
 		$("#letterCards").append(''
-			+'<div id="letter_'+ myLetter +'" class="card selectedLetter text-center">'
+			+'<div id="letter_'+ myLetter +'" class="card selectedLetter text-center col-md-1">'
 			+	'<div class="card-block selectedLetter">'
 			+		'<!--Card content -->'
 			+		'<p class="card-text selectedLetter">' + myLetter + '</p>'
@@ -97,6 +100,7 @@ function RandomWordComplete(data) {
 		console.log(errorCounter)
 		if (errorCounter == 5) {
 			console.log("i lost")
+			$("#lostMessage").modal();
 		}
 	}
 
@@ -117,12 +121,14 @@ function displayWord(selectedWord){
 			$("#hiddenWord").append(" ");
 		}
 	}
+	$("#lostMessage .myWord").text(selectedWord);
+	$("#wonMessage .myWord").text(selectedWord);
 }
 
 function checkWin(){
 	var currentLetters = $("#hiddenWord").text();
 	if (currentLetters == myWord) {
-	console.log("i win")
+		$("#wonMessage").modal();
 	}
 }
 
