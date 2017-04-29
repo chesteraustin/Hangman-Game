@@ -4,6 +4,18 @@ $( document ).ready(function() {
 	pickWordAJAX();
 
 	function pickWordAJAX(){
+		//Github pages runs on HTTPS, can't use this API
+/*
+		var requestStr = "http://randomword.setgetgo.com/get.php";
+ 		myWordAJAX = $.ajax({
+  			type: "GET",
+  			url: requestStr,
+ 			dataType: "jsonp",
+ 			jsonpCallback: 'RandomWordComplete
+ 			RandomWordComplete(response);
+ 			}
+  		});
+*/
 		var requestStr = "assets/javascript/words.json";
 
 		myWordAJAX = $.ajax({
@@ -33,15 +45,22 @@ function RandomWordComplete(data) {
 			+'</div>'
 			)
 	}
+		//Github pages runs on HTTPS, can't use this API
+/*
+	myWord = data.Word.toUpperCase();
+*/
 	wordPosition = Math.floor(Math.random()*data.Words.length);
 	myWord = data.Words[wordPosition].toUpperCase();
 	displayWord(myWord);
 
 	//Listen for click
+	//Bug where if clicked, multiple clicks are registered
 	$(".selectedLetter").on("click", function(){
 		//Letter of selected card
 		console.log($(this));
 		var selectedLetter = $(this).text();
+		$($(this)).removeClass()
+				.addClass("cardPlayed");
 		correctLetter = checkLetter(selectedLetter);
 
 		if (correctLetter == false) {
@@ -60,6 +79,8 @@ function RandomWordComplete(data) {
 
 		//only letters are valid choices, anything else won't count
 		if (event.which <= 90 && event.which >= 65) {
+		$("#letter_" + selectedLetter.toUpperCase()).removeClass("card")
+					.addClass("cardPlayed");
 			correctLetter = checkLetter(selectedLetter);
 
 			if (correctLetter == false) {
@@ -70,7 +91,7 @@ function RandomWordComplete(data) {
 			checkWin(correctLetter);
 		}
 	}
-	
+
 	function showPart(errorCounter){
 		$($("#hangmanBody .bodyPart")[errorCounter]).show();
 		console.log(errorCounter)

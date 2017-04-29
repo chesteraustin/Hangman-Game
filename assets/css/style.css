@@ -3,6 +3,13 @@
 }
 
 .card {
+	background: red;
+	padding: 1rem;
+	margin: 1rem;
+	min-width: 6rem;
+}
+
+.cardPlayed {
 	background: grey;
 	padding: 1rem;
 	margin: 1rem;
