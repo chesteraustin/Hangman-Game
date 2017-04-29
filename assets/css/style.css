@@ -1,5 +1,17 @@
+body {
+	background-color: lightblue;
+}
+
 .bodyPart {
 	display: none;
+}
+
+.jumbotron {
+	background: url('../images/ropes.jpg');
+}
+
+.jumbotron > img {
+	width: 100%;
 }
 
 .card {
